@@ -99,11 +99,11 @@ export async function register(formData: FormData) {
   );
 
   if (!validatedFields.success) {
-    const flattened = z.flattenError(validatedFields.error);
+    const { fieldErrors } = validatedFields.error.flatten();
     return {
       success: false,
       message: "Invalid form data.",
-      errors: flattened.fieldErrors,
+      errors: fieldErrors,
     };
   }
 
