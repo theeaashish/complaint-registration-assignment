@@ -20,4 +20,22 @@ export const complaintSchema = z.object({
   priority: z.enum(complaintPriorities, { message: "Priority is required" }),
 });
 
+// autjh schema
+export const LoginSchema = z.object({
+  email: z.email({ message: "Please enter a valid email address." }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long" }),
+});
+
+export const RegisterSchema = z.object({
+  name: z.string().min(2, { message: "Name is required." }),
+  email: z.email({ message: "Please enter a valid email address." }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long." }),
+});
+
 export type ComplaintSchemaType = z.infer<typeof complaintSchema>;
+export type LoginSchemaType = z.infer<typeof LoginSchema>;
+export type RegisterSchemaType = z.infer<typeof RegisterSchema>;
