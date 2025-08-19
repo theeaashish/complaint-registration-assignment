@@ -36,6 +36,12 @@ export const RegisterSchema = z.object({
     .min(6, { message: "Password must be at least 6 characters long." }),
 });
 
+export type ActionResponse = {
+  success: boolean;
+  message: string;
+  data?: any;
+};
+
 export type ComplaintSchemaType = z.infer<typeof complaintSchema>;
 export type LoginSchemaType = z.infer<typeof LoginSchema>;
 export type RegisterSchemaType = z.infer<typeof RegisterSchema>;

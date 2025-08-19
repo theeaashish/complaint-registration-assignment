@@ -7,6 +7,7 @@ import { LoginSchema, RegisterSchema } from "./zodSchemas";
 import { connectToDB } from "./db";
 import User from "@/models/user";
 import { z } from "zod";
+import { NextRequest, NextResponse } from "next/server";
 
 const secretKey = process.env.AUTH_SECRET;
 
@@ -129,4 +130,30 @@ export async function register(formData: FormData) {
   }
 
   return await login(formData);
+}
+
+export async function getSession() {
+  const session = (await cookies()).get("session")?.value;
+  if (!session) return null;
+
+  return await decrypt(session);
+}
+
+export async function updateSession(request: NextRequest) {
+  const session = request.cookies.get("session")?.value;
+  if (!session) return;
+
+  const parsed = await decrypt(session);
+  parsed.expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  const res = NextResponse.next();
+  res.cookies.set({
+    name: "session",
+    value: await encrypt(parsed),
+    httpOnly: true,
+    expires: parsed.expires,
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+  });
+  return res;
 }
