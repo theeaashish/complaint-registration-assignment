@@ -11,6 +11,7 @@ import {
 import { complaintStatuses } from "@/lib/zodSchemas";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 type ComplaintItem = {
   _id: string;
@@ -54,8 +55,10 @@ export default function AdminDashboard({
     const res = await fetch(`/api/complaints/${id}`, { method: "DELETE" });
     if (res.ok) {
       setComplaints((prev) => prev.filter((c) => c._id !== id));
+      toast.success("Complaint deleted successfully! Try refreshing to see the changes.");
     } else {
       console.error("[deleteComplaint] failed", await res.text());
+      toast.error("Failed to delete complaint. Please try again.");
     }
   }
 
