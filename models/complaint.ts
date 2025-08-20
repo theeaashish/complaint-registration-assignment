@@ -3,7 +3,7 @@ import {
   complaintPriorities,
   complaintStatuses,
 } from "@/lib/zodSchemas";
-import { Document, Schema, Types, model } from "mongoose";
+import { Document, Model, Schema, Types, model, models } from "mongoose";
 
 export interface Complaint extends Document {
   _id: Types.ObjectId;
@@ -29,6 +29,6 @@ const ComplaintSchema: Schema<Complaint> = new Schema(
   }
 );
 
-const Complaint = model<Complaint>("Complaint", ComplaintSchema);
+const Complaint: Model<Complaint> = models.Complaint || model<Complaint>('Complaint', ComplaintSchema);
 
 export default Complaint;

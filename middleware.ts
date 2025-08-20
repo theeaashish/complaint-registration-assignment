@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "./lib/auth";
+import { getSession, SessionPayload, AuthUser } from "./lib/session";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const session = await getSession();
-  const user = session?.user;
+  const session = (await getSession()) as SessionPayload | null;
+  const user = session?.user as AuthUser | undefined;
 
   const isAuthPage = pathname === "/login" || pathname === "/register";
   const isAdminRoute = pathname.startsWith("/admin");

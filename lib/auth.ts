@@ -1,41 +1,14 @@
 "use server";
 
-import { SignJWT, jwtVerify } from "jose";
+
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { LoginSchema, RegisterSchema } from "./zodSchemas";
 import { connectToDB } from "./db";
 import User from "@/models/user";
-import { z } from "zod";
 import { NextRequest, NextResponse } from "next/server";
 
-const secretKey = process.env.AUTH_SECRET;
-
-if (!secretKey) {
-  throw new Error("AUTH_SECRET is not defined");
-}
-
-const key = new TextEncoder().encode(secretKey);
-
-export async function encrypt(payload: any) {
-  return await new SignJWT(payload)
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime("1d")
-    .sign(key);
-}
-
-export async function decrypt(input: string): Promise<any> {
-  try {
-    const { payload } = await jwtVerify(input, key, {
-      algorithms: ["HS256"],
-    });
-    return payload;
-  } catch (e) {
-    return null;
-  }
-}
-
+import { encrypt, decrypt } from "./session";
 export async function login(formData: FormData) {
   const validatedFields = LoginSchema.safeParse(Object.fromEntries(formData));
   if (!validatedFields.success) {
@@ -132,26 +105,19 @@ export async function register(formData: FormData) {
   return await login(formData);
 }
 
-export async function getSession() {
-  const session = (await cookies()).get("session")?.value;
-  if (!session) return null;
-
-  return await decrypt(session);
-}
-
 export async function updateSession(request: NextRequest) {
   const session = request.cookies.get("session")?.value;
   if (!session) return;
 
   const parsed = await decrypt(session);
-  parsed.expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  if (!parsed) return;
+  const newExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  parsed.expires = newExpires.toISOString();
 
   const res = NextResponse.next();
-  res.cookies.set({
-    name: "session",
-    value: await encrypt(parsed),
+  res.cookies.set("session", await encrypt(parsed), {
     httpOnly: true,
-    expires: parsed.expires,
+    expires: new Date(parsed.expires),
     path: "/",
     secure: process.env.NODE_ENV === "production",
   });

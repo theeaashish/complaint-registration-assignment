@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   ActionResponse,
-  LoginSchema,
   RegisterSchema,
   RegisterSchemaType,
 } from "@/lib/zodSchemas";
@@ -20,8 +19,7 @@ import Link from "next/link";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchemaType } from "@/lib/zodSchemas";
-import { loginAction, registerAction } from "@/lib/actions/actions";
+import { registerAction } from "@/lib/actions/actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 const RegisterPage = () => {
@@ -31,7 +29,7 @@ const RegisterPage = () => {
   });
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<RegisterSchemaType>({
+  useForm<RegisterSchemaType>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: { name: "", email: "", password: "" },
   });
