@@ -259,28 +259,6 @@ npm run start        # Start production server
 npm run lint         # Run ESLint
 ```
 
-## 📸 Screenshots
-
-### Homepage
-![Homepage](./screenshots/homepage.png)
-*Clean and modern landing page with authentication options*
-
-### Login Page
-![Login Page](./screenshots/login.png)
-*Secure login form with admin credentials displayed*
-
-### Complaint Submission Form
-![Complaint Form](./screenshots/complaint-form.png)
-*User-friendly form for submitting complaints*
-
-### Admin Dashboard
-![Admin Dashboard](./screenshots/admin-dashboard.png)
-*Comprehensive admin panel for managing complaints*
-
-### Toast Notifications
-![Toast Notifications](./screenshots/toast-notifications.png)
-*Real-time feedback with Sonner toast notifications*
-
 ## 🤝 Contributing
 
 1. Fork the repository
